@@ -126,10 +126,11 @@ export default function App() {
   const onEnter = useCallback(() => {
     if (input.length < word.length) return
 
-    if (
-      !isValidWord(input) &&
-      (!ALLOW_PLURAL || (input.endsWith("s") && isValidWord(input.slice(0, -1))))
-    ) {
+    const isValid =
+      isValidWord(input) ||
+      (ALLOW_PLURAL && input.endsWith("s") && isValidWord(input.slice(0, -1)))
+
+    if (!isValid) {
       setDialog({
         title: "Error",
         children: <span>Invalid word: {input}</span>,

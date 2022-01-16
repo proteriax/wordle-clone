@@ -52,7 +52,7 @@ const Keycap = styled.div<{ modifier?: Modifier; width?: number }>`
       : "#ddd"};
   --background-hover: #bbb;
   --width: ${p => (p.width ?? 1) * 2.5}em;
-  --height: 3.1em;
+  --height: 3.2em;
   background-color: var(--background);
   border-radius: 3px;
   ${p => p.modifier === Modifier.Wrong && "color: #fff"};
