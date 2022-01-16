@@ -1,0 +1,25 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  --border-color: #ccc;
+  --background-correct: #6aaa63;
+  --background-almost: #c9b457;
+  --background-wrong: #86888b;
+}
+button {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-family: inherit;
+  padding: 5px 10px;
+}
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.14) 0px 1px 8px;
+  transition: 0.2s;
+}
+button + button {
+  margin-left: 10px;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
