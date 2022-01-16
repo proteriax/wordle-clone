@@ -54,7 +54,7 @@ export default function App() {
     getRandomWord(defaultConfig.wordLength)
   )
   const [guesses, setGuesses] = useCacheState<string[]>("app.guesses", () => [])
-  const [input, setInput] = useCacheState("app.input", "at")
+  const [input, setInput] = useCacheState("app.input", "")
   const container = useRef<HTMLDivElement>(null)
 
   const [showConfig, setShowConfig] = useState(false)
