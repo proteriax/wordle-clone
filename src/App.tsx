@@ -48,6 +48,8 @@ function getRandomWord(length: number) {
   return sample(wordsByLength[length])!.toLowerCase()
 }
 
+const ALLOW_PLURAL = true
+
 export default function App() {
   const [config, setConfig] = useCacheState("app.config", defaultConfig)
   const [word, setWord] = useCacheState("app.word", () =>
@@ -124,7 +126,10 @@ export default function App() {
   const onEnter = useCallback(() => {
     if (input.length < word.length) return
 
-    if (!isValidWord(input)) {
+    if (
+      !isValidWord(input) &&
+      (!ALLOW_PLURAL || (input.endsWith("s") && isValidWord(input.slice(0, -1))))
+    ) {
       setDialog({
         title: "Error",
         children: <span>Invalid word: {input}</span>,
