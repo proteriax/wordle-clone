@@ -52,7 +52,8 @@ const Keycap = styled.div<{ modifier?: Modifier; width?: number }>`
       : "#ddd"};
   --background-hover: #bbb;
   --width: ${p => (p.width ?? 1) * 2.5}em;
-  --height: 3.2em;
+  --height: 3.3em;
+  --margin: 5px;
   background-color: var(--background);
   border-radius: 3px;
   ${p => p.modifier === Modifier.Wrong && "color: #fff"};
@@ -67,10 +68,11 @@ const Keycap = styled.div<{ modifier?: Modifier; width?: number }>`
     transition: 0.2s;
   }
   &:not(:last-of-type) {
-    margin-right: 5px;
+    margin-right: var(--margin);
   }
   @media (max-width: 800px) {
     --width: ${p => (p.width ?? 1) * 2}em;
+    --margin: 3px;
   }
   @media (max-width: 600px) {
     --width: ${p => (p.width ?? 1) * 1.8}em;
