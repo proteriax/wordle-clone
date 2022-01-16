@@ -26,7 +26,7 @@ const Shareable = styled.div`
   line-height: 1.5em;
 `
 const CheatContainer = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   text-align: center;
 `
 
