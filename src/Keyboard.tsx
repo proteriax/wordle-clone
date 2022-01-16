@@ -71,7 +71,7 @@ const Keycap = styled.div<{ modifier?: Modifier; width?: number }>`
     margin-right: var(--margin);
   }
   @media (max-width: 800px) {
-    --width: ${p => (p.width ?? 1) * 2}em;
+    --width: ${p => (p.width ?? 1) * 2.1}em;
     --margin: 3px;
   }
   @media (max-width: 600px) {
