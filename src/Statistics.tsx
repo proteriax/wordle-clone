@@ -3,7 +3,7 @@ import type { KeyGuess } from "./Guesses"
 import type { Config } from "./Config"
 
 export function getShareable(config: Config, guesses: KeyGuess[][]) {
-  return [`Game ${guesses.length + 1}/${config.maxAttempts}`]
+  return [`Game ${guesses.length}/${config.maxAttempts}`]
     .concat(
       guesses.map(guess =>
         guess
