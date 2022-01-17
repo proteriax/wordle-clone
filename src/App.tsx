@@ -69,7 +69,7 @@ export default function App() {
   const [showCheat, setShowCheat] = useState(false)
 
   useEffect(() => {
-    document.body.classList.toggle("dark", config.darkMode)
+    document.body.classList.toggle("dark", config.darkMode ?? false)
   }, [config.darkMode])
 
   const guessesData = useMemo(
