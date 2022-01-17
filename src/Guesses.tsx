@@ -64,7 +64,7 @@ const Slot = styled.div<{ modifier?: Modifier }>`
       : p.modifier === Modifier.Wrong
       ? "var(--background-wrong)"
       : "var(--background-color)"};
-  border: 2px solid ${p => (p.modifier ? "transparent" : "#bbb")};
+  border: 2px solid ${p => (p.modifier ? "transparent" : "var(--guess-border")};
   color: var(--text-color);
   display: inline-block;
   font-size: 30px;
