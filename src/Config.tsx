@@ -22,7 +22,7 @@ const FormValue = styled.div`
   align-items: center;
   flex-grow: 1;
   position: relative;
-  min-width: 90px;
+  min-width: 60px;
   select {
     width: 100%;
   }
