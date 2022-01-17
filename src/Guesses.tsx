@@ -26,8 +26,8 @@ export const getKeyGuess = (guess: string, answer: string) => {
       slots[i] = { letter: g, modifier: Modifier.Correct }
     }
   })
-  forEach2(guess, answer, (g, a, i) => {
-    if (used.has(i)) return
+  Array.from(guess).forEach((g, i) => {
+    if (slots[i] != null) return
     for (let j = 0; j < answer.length; j++) {
       const v = answer[j]
       if (i === j || used.has(j)) continue
@@ -63,8 +63,9 @@ const Slot = styled.div<{ modifier?: Modifier }>`
       ? "var(--background-almost)"
       : p.modifier === Modifier.Wrong
       ? "var(--background-wrong)"
-      : "#fff"};
+      : "var(--background-color)"};
   border: 2px solid ${p => (p.modifier ? "transparent" : "#bbb")};
+  color: var(--text-color);
   display: inline-block;
   font-size: 30px;
   font-weight: 600;
@@ -81,17 +82,15 @@ const Slot = styled.div<{ modifier?: Modifier }>`
   }
 `
 
-const Guess = memo<{ guess: KeyGuess[]; answer: string }>(({ guess, answer }) => {
-  return (
-    <Row>
-      {guess.map((slot, i) => (
-        <Slot key={i} modifier={slot.modifier}>
-          {slot.letter}
-        </Slot>
-      ))}
-    </Row>
-  )
-})
+const Guess = memo<{ guess: KeyGuess[] }>(({ guess }) => (
+  <Row>
+    {guess.map((slot, i) => (
+      <Slot key={i} modifier={slot.modifier}>
+        {slot.letter}
+      </Slot>
+    ))}
+  </Row>
+))
 
 const Input: React.FC<{ value: string; length: number }> = ({ value, length }) => (
   <Row>
@@ -111,18 +110,18 @@ export const Guesses: React.FC<{
 }> = ({ guesses, answer, input, emptyBlocks }) => (
   <Container>
     {guesses.map((guess, i) => (
-      <Guess guess={guess} answer={answer} key={i} />
+      <Guess guess={guess} key={i} />
     ))}
     {!!input && <Input length={answer.length} value={input} />}
     {emptyBlocks > 0 &&
       Array(emptyBlocks)
         .fill(0)
-        .map(() => (
-          <Row>
+        .map((_, i) => (
+          <Row key={i}>
             {Array(answer.length)
               .fill(0)
               .map((_, i) => (
-                <Slot key={i}> </Slot>
+                <Slot key={i}>{" "}</Slot>
               ))}
           </Row>
         ))}

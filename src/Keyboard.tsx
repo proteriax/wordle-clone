@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { BsBackspace } from "react-icons/bs"
 
 export enum Modifier {
   Correct = 1,
@@ -12,11 +13,21 @@ enum KeyType {
   Enter,
 }
 
-type Key = {
-  label: string
-  type: KeyType
-  width?: number
-}
+type Key =
+  | {
+      label: string
+      type: KeyType.Letter
+      width?: number
+    }
+  | {
+      label: React.ReactNode
+      type: KeyType.Backspace | KeyType.Enter
+      width?: number
+    }
+
+const Backspace = styled(BsBackspace)`
+  margin-bottom: -2px;
+`
 
 const keys = (letters: string): Key[] =>
   letters.split("").map(key => ({ label: key, type: KeyType.Letter }))
@@ -25,7 +36,7 @@ const qwerty: Key[][] = [
   [...keys("QWERTYUIOP")],
   [...keys("ASDFGHJKL")],
   [
-    { label: "⌫", type: KeyType.Backspace, width: 1.7 },
+    { label: <Backspace />, type: KeyType.Backspace, width: 1.4 },
     ...keys("ZXCVBNM"),
     { label: "Enter", type: KeyType.Enter, width: 1.7 },
   ],
@@ -49,7 +60,7 @@ const Keycap = styled.div<{ modifier?: Modifier; width?: number }>`
       ? "var(--background-almost)"
       : p.modifier === Modifier.Wrong
       ? "var(--background-wrong)"
-      : "#ddd"};
+      : "var(--keyboard-background)"};
   --background-hover: #bbb;
   --width: ${p => (p.width ?? 1) * 2.5}em;
   --height: 3.3em;
@@ -85,31 +96,29 @@ export const Keyboard: React.FC<{
   onEnter(): void
   onType(char: string): void
   onBackspace(): void
-}> = ({ layout = qwerty, onBackspace, onType, onEnter, modifiers }) => {
-  return (
-    <Container>
-      {layout.map((row, i) => (
-        <KeyboardRow key={i}>
-          {row.map((key, j) => (
-            <Keycap
-              width={key.width}
-              modifier={key.type === KeyType.Letter ? modifiers[key.label] : undefined}
-              key={j}
-              onClick={
-                key.type === KeyType.Letter
-                  ? () => onType(key.label)
-                  : key.type === KeyType.Enter
-                  ? onEnter
-                  : key.type === KeyType.Backspace
-                  ? onBackspace
-                  : undefined
-              }
-            >
-              {key.label}
-            </Keycap>
-          ))}
-        </KeyboardRow>
-      ))}
-    </Container>
-  )
-}
+}> = ({ layout = qwerty, onBackspace, onType, onEnter, modifiers }) => (
+  <Container>
+    {layout.map((row, i) => (
+      <KeyboardRow key={i}>
+        {row.map((key, j) => (
+          <Keycap
+            width={key.width}
+            modifier={key.type === KeyType.Letter ? modifiers[key.label] : undefined}
+            key={j}
+            onClick={
+              key.type === KeyType.Letter
+                ? () => onType(key.label)
+                : key.type === KeyType.Enter
+                ? onEnter
+                : key.type === KeyType.Backspace
+                ? onBackspace
+                : undefined
+            }
+          >
+            {key.label}
+          </Keycap>
+        ))}
+      </KeyboardRow>
+    ))}
+  </Container>
+)

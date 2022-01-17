@@ -1,17 +1,24 @@
-import { useCallback, useEffect, useState, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { sample } from "lodash"
+import { MdRefresh } from "react-icons/md"
+import { GrUndo } from "react-icons/gr"
+import { FiSettings } from "react-icons/fi"
 import styled from "@emotion/styled"
-import { wordsByLength, isValidWord } from "./words"
-import { Keyboard, Modifier } from "./Keyboard"
-import { getKeyGuess, Guesses } from "./Guesses"
+import { isValidWord, wordsByLength } from "./words"
+import type { Modifier } from "./Keyboard"
+import { Keyboard } from "./Keyboard"
+import type { KeyGuess } from "./Guesses"
+import { Guesses, getKeyGuess } from "./Guesses"
 import { Dialog } from "./Dialog"
-import { Config, ConfigDialog } from "./Config"
+import type { Config } from "./Config"
+import { ConfigDialog } from "./Config"
 import { getShareable } from "./Statistics"
 import { useCacheState } from "./useCacheState"
 
 const defaultConfig: Config = {
   wordLength: 5,
   maxAttempts: 6,
+  darkMode: false,
 }
 const Container = styled.div``
 const Main = styled.div`
@@ -31,8 +38,8 @@ const CheatContainer = styled.div`
 `
 
 const Header = styled.header`
-  background: #eee;
-  border-bottom: 1px solid #ddd;
+  background: var(--header-background);
+  border-bottom: 1px solid var(--border-color-light);
   display: flex;
   padding: 12px 24px 10px;
   margin: 0 0 10px;
@@ -57,27 +64,19 @@ export default function App() {
   )
   const [guesses, setGuesses] = useCacheState<string[]>("app.guesses", () => [])
   const [input, setInput] = useCacheState("app.input", "")
-  const container = useRef<HTMLDivElement>(null)
 
   const [showConfig, setShowConfig] = useState(false)
   const [showCheat, setShowCheat] = useState(false)
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", config.darkMode)
+  }, [config.darkMode])
 
   const guessesData = useMemo(
     () => guesses.map(guess => getKeyGuess(guess, word)),
     [guesses, word]
   )
-  const modifierMap = useMemo(() => {
-    const res: Record<string, Modifier> = {}
-    guessesData.forEach(keys => {
-      keys.forEach(({ letter, modifier }) => {
-        letter = letter.toUpperCase()
-        if (res[letter] == null || modifier < res[letter]) {
-          res[letter] = modifier
-        }
-      })
-    })
-    return res
-  }, [guessesData])
+  const modifierMap = useMemo(() => toModifierMap(guessesData), [guessesData])
 
   const [dialog, setDialog] = useState<{
     title: string
@@ -89,7 +88,6 @@ export default function App() {
     setInput("")
     setShowCheat(false)
     setWord(getRandomWord(config.wordLength))
-    container.current!.focus()
   }, [config.wordLength])
 
   const onType = useCallback(
@@ -118,7 +116,7 @@ export default function App() {
         </div>
       ),
     })
-  }, [guessesData])
+  }, [config, guessesData])
 
   const onCorrectLatest = useRef(onCorrect)
   onCorrectLatest.current = onCorrect
@@ -146,7 +144,11 @@ export default function App() {
     } else if (guesses.length + 1 >= config.maxAttempts) {
       setDialog({
         title: ":-(",
-        children: <div>The word is {word}</div>,
+        children: (
+          <div>
+            The word is <b>{word}</b>
+          </div>
+        ),
       })
     }
   }, [input, guesses.length, config.maxAttempts, word, setGuesses, setInput])
@@ -184,13 +186,27 @@ export default function App() {
   }, [onEnter, onBackspace, onType])
 
   return (
-    <Container ref={container}>
+    <Container>
       <Header>
-        <button onClick={onReset}>Reset</button>
-        <button onClick={() => setGuesses(g => g.slice(0, -1))}>Undo</button>
+        <button onClick={onReset} title="Reset" aria-label="Reset game">
+          <MdRefresh />
+        </button>
+        <button
+          title="Undo"
+          aria-label="Undo last step"
+          onClick={() => setGuesses(g => g.slice(0, -1))}
+        >
+          <GrUndo />
+        </button>
         <Title>Wordle</Title>
-        {!showCheat && <button onClick={() => setShowCheat(true)}>Give Up</button>}
-        <button onClick={() => setShowConfig(true)}>Config</button>
+        {!showCheat && (
+          <button onClick={() => setShowCheat(true)} title="Give up">
+            Give Up
+          </button>
+        )}
+        <button onClick={() => setShowConfig(true)} title="Config">
+          <FiSettings />
+        </button>
       </Header>
       <Main>
         <Guesses
@@ -221,4 +237,17 @@ export default function App() {
       </Main>
     </Container>
   )
+}
+
+function toModifierMap(guesses: KeyGuess[][]) {
+  const res: Record<string, Modifier> = {}
+  guesses.forEach(keys => {
+    keys.forEach(({ letter, modifier }) => {
+      letter = letter.toUpperCase()
+      if (res[letter] == null || modifier < res[letter]) {
+        res[letter] = modifier
+      }
+    })
+  })
+  return res
 }

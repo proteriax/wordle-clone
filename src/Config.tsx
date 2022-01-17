@@ -3,6 +3,7 @@ import {} from "react"
 import { Dialog } from "./Dialog"
 
 export interface Config {
+  darkMode: boolean
   wordLength: number
   maxAttempts: number
 }
@@ -11,23 +12,23 @@ const FormItem = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 13px;
+  min-height: 28px;
 `
 const FormLabel = styled.div`
-  width: 120px;
+  width: 150px;
 `
 const FormValue = styled.div`
   display: flex;
   align-items: center;
   flex-grow: 1;
   position: relative;
-  min-width: 200px;
+  min-width: 90px;
   select {
     width: 100%;
   }
 `
 const Checkbox = styled.input`
-  margin-left: 0;
-  margin-right: 8px;
+  margin: 0 8px 0 0;
 `
 
 export const ConfigDialog: React.FC<{
@@ -36,6 +37,17 @@ export const ConfigDialog: React.FC<{
   onClose(): void
 }> = ({ config, onChange, onClose }) => (
   <Dialog show onClose={onClose} title="Configuration">
+    <FormItem>
+      <FormLabel>Dark mode</FormLabel>
+      <FormValue>
+        <Checkbox
+          type="checkbox"
+          checked={config.darkMode}
+          onChange={e => onChange({ ...config, darkMode: e.currentTarget.checked })}
+        />
+      </FormValue>
+    </FormItem>
+
     <FormItem>
       <FormLabel>Word length</FormLabel>
       <FormValue>

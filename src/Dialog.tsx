@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { useCallback, useEffect } from "react"
+import { ImCross } from "react-icons/im"
 
 const ModalBackground = styled.div`
   background: rgba(0, 0, 0, 0.6);
@@ -22,12 +23,13 @@ const ModalBackground2 = styled.div`
   align-items: center;
 `
 const ModalContainer = styled.div`
-  background: #fff;
+  background: var(--background-color);
   box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   border-radius: 5px;
   margin: 0 auto;
 `
 const ModalTitle = styled.div`
+  position: relative;
   border-bottom: 1px solid var(--border-color);
   padding: 10px 20px;
   font-weight: 600;
@@ -35,6 +37,14 @@ const ModalTitle = styled.div`
 `
 const ModalContent = styled.div`
   padding: 15px 20px;
+`
+const CloseIcon = styled(ImCross)`
+  font-size: 0.8em;
+  height: 100%;
+  left: 18px;
+  opacity: 0.7;
+  position: absolute;
+  top: 0;
 `
 
 export const Dialog: React.FC<{
@@ -75,7 +85,10 @@ export const Dialog: React.FC<{
       <ModalBackground />
       <ModalBackground2 onClick={onBackgroundClick}>
         <ModalContainer style={{ maxWidth }}>
-          <ModalTitle>{title}</ModalTitle>
+          <ModalTitle>
+            <CloseIcon aria-label="Close dialog" title="Close" onClick={onClose} />
+            {title}
+          </ModalTitle>
           <ModalContent>{children}</ModalContent>
         </ModalContainer>
       </ModalBackground2>
